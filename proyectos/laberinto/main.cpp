@@ -11,7 +11,7 @@ bool is_empty(char **board, int posX, int posY)
 
 bool is_valid(char **board, int size, int posX, int posY)
 {
-    if ((posX < size || posY < size) && (posX >= 0 || posY >= 0))
+    if ((posX < size && posY < size) && (posX >= 0 && posY >= 0))
     {
         return true;
     }
@@ -21,16 +21,20 @@ bool is_valid(char **board, int size, int posX, int posY)
 bool buscar(char **board, int size, int posX, int posY)
 {
     // std::cout << "Entro buscar" << std::endl;
-    if (posX == size - 1 && posY == size - 1)
+    if (posX == size - 1 && posY == 0)
     {
-        board[posX][posY] = '>';
+        if (is_empty(board, posX, posY))
+        {
+            board[posX][posY] = '>';
         // std::cout << "Llego final" << std::endl;
-        return true;
+            return true;
+        }
+        return false;
     }
 
-    if (is_empty(board, posX, posY))
+    if (is_valid(board, size, posX, posY))
     {
-        if (is_valid(board, size, posX, posY))
+        if (is_empty(board, posX, posY))
         {
 
             // std::cout << "Esta vacia la posicion" << std::endl;
@@ -40,19 +44,23 @@ bool buscar(char **board, int size, int posX, int posY)
         {
             return false;
         }
-        if (buscar(board, size, posX, posY - 1))
+        // Movimiento arriba
+        if (buscar(board, size, posX - 1, posY))
         {
             return true;
         }
-        else if (buscar(board, size, posX + 1, posY))
-        {
-            return true;
-        }
+        // Movimiento derecha
         else if (buscar(board, size, posX, posY + 1))
         {
             return true;
         }
-        else if (buscar(board, size, posX - 1, posY))
+        // Movimiento abajo
+        else if (buscar(board, size, posX + 1, posY))
+        {
+            return true;
+        }
+        // Movimiento izquierda
+        else if (buscar(board, size, posX, posY - 1))
         {
             return true;
         }
@@ -136,7 +144,7 @@ int main()
 
     mostrarMatriz(matriz1, 5, 5);
 
-    bool finalizado = buscar(matriz1, 5, 0, 0);
+    bool finalizado = buscar(matriz1, 5, 1, 1);
     std::cout << finalizado << std::endl;
 
     mostrarMatriz(matriz1, 5, 5);
